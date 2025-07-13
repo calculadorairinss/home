@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora IR e INSS</title>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 20px;">
+    <h2>Calculadora de IR e INSS - Modelo Atual vs Proposta (PL 1087/2025)</h2>
+    <label for="salario">Informe seu salário bruto (R$):</label>
+    <input type="number" id="salario" value="13000" step="100">
+    <button onclick="calcular()">Calcular</button>
+
+    <div id="resultado" style="margin-top: 20px;"></div>
+
+    <script>
+        function calcularINSS(salario) {
+            let faixas = [
+                [1212.00, 0.075],
+                [2427.35, 0.09],
+                [3641.03, 0.12],
+                [Infinity, 0.14]
+            ];
+            let limites = [1212.00, 1215.35, 1213.68, 4516.38];
+            let total = 0;
+            let restante = salario;
+
+            for (let i = 0; i < faixas.length; i++) {
+                if (restante > 0) {
+                    let base = Math.min(restante, limites[i]);
+                    total += base * faixas[i][1];
+                    restante -= base;
+                }
+            }
+            return Math.min(total, 951.62);
+        }
+
+        function calcularIRAtual(base) {
+            let faixas = [
+                [2112.00, 0.0, 0.0],
+                [2826.65, 0.075, 158.40],
+                [3751.05, 0.15, 370.40],
+                [4664.68, 0.225, 651.73],
+                [Infinity, 0.275, 884.96]
+            ];
+            for (let i = 0; i < faixas.length; i++) {
+                if (base <= faixas[i][0]) {
+                    return Math.max(0, (base * faixas[i][1]) - faixas[i][2]);
+                }
+            }
+            return 0;
+        }
+
+        function calcularIRProposta(base) {
+            let faixas = [
+                [5000.00, 0.00],
+                [7350.00, 0.075],
+                [10000.00, 0.15],
+                [20000.00, 0.225],
+                [Infinity, 0.275]
+            ];
+            let imposto = 0;
+            let anterior = 0;
+
+            for (let i = 0; i < faixas.length; i++) {
+                let teto = faixas[i][0];
+                let aliquota = faixas[i][1];
+                if (base > teto) {
+                    imposto += (teto - anterior) * aliquota;
+                } else {
+                    imposto += (base - anterior) * aliquota;
+                    break;
+                }
+                anterior = teto;
+            }
+            return imposto;
+        }
+
+        function calcular() {
+            let salario = parseFloat(document.getElementById('salario').value);
+            let inss = calcularINSS(salario);
+            let base = salario - inss;
+            let irAtual = calcularIRAtual(base);
+            let irNovo = calcularIRProposta(base);
+            let resultado = `
+                <p><strong>Salário Bruto:</strong> R$ ${salario.toFixed(2)}</p>
+                <p><strong>Desconto INSS:</strong> R$ ${inss.toFixed(2)}</p>
+                <p><strong>Base de Cálculo:</strong> R$ ${base.toFixed(2)}</p>
+                <p><strong>IR Atual:</strong> R$ ${irAtual.toFixed(2)}</p>
+                <p><strong>IR Proposta (PL 1087/25):</strong> R$ ${irNovo.toFixed(2)}</p>
+                <p><strong>Diferença de IR:</strong> R$ ${(irAtual - irNovo).toFixed(2)}</p>
+            `;
+            document.getElementById('resultado').innerHTML = resultado;
+        }
+    </script>
+</body>
+</html>
