@@ -1,3 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulador de Impostos</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 30px; background: #f8f8f8; }
+    .container { max-width: 850px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    input { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; }
+    button { padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+    .result { background: #e8f5e9; padding: 20px; margin-top: 20px; border-left: 5px solid #388e3c; border-radius: 5px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>"Simulador: Modelo Atual vs. Modelo Proposto pelo Governo para Cobrança de Imposto de Renda e Patrimônio"</h2>
+
+  <label for="salario">Salário Bruto Pessoa Física:</label>
+  <input type="text" id="salario" placeholder="Ex: 5.000,00">
+
+  <label for="lucros">Lucros Recebidos Pessoa Jurídica:</label>
+  <input type="text" id="lucros" placeholder="Ex: 1.000.000,00">
+
+  <label for="dividendos">Dividendos Recebidos:</label>
+  <input type="text" id="dividendos" placeholder="Ex: 1.000.000.000.000">
+
+  <label for="offshore">Lucros Offshore:</label>
+  <input type="text" id="offshore" placeholder="Ex: 2.000.000,00">
+
+  <label for="fundos">Fundos Exclusivos:</label>
+  <input type="text" id="fundos" placeholder="Ex: 3.000.000,00">
+
+  <label for="heranca">Herança/Doações Recebidas:</label>
+  <input type="text" id="heranca" placeholder="Ex: 4.000.000,00">
+
+  <button onclick="calcularTudo()">Calcular</button>
+
+  <div id="resultado" class="result"></div>
+</div>
+
 <script>
 function parseInput(valor) {
   valor = valor.replaceAll('.', '').replace(',', '.');
@@ -17,15 +58,18 @@ function calcularTudo() {
   let fundos = parseInput(document.getElementById("fundos").value);
   let heranca = parseInput(document.getElementById("heranca").value);
 
+  // 🟢 Cálculos de INSS e base de IR
   let inss = Math.min(salario * 0.14, 951.62);
   let base_ir = salario - inss;
 
+  // 🟢 IR Modelo Atual
   let ir_atual = base_ir <= 2112 ? 0 :
                  base_ir <= 2826.65 ? base_ir * 0.075 - 158.4 :
                  base_ir <= 3751.05 ? base_ir * 0.15 - 370.4 :
                  base_ir <= 4664.68 ? base_ir * 0.225 - 651.73 :
                  base_ir * 0.275 - 884.96;
 
+  // 🟢 IR Proposta do Governo
   let ir_proposta = 0;
   if (base_ir > 5000) {
     ir_proposta += Math.min(base_ir - 5000, 2350) * 0.075;
@@ -34,18 +78,23 @@ function calcularTudo() {
     if (base_ir > 20000) ir_proposta += (base_ir - 20000) * 0.275;
   }
 
+  // 🟢 Outros impostos
   let ir_dividendos = dividendos * 0.15;
   let ir_offshore = offshore * 0.22;
   let ir_fundos = fundos * 0.15;
   let itcmd = heranca <= 4000000 ? heranca * 0.08 : heranca * 0.16;
 
+  // 🟢 Totais
   let total_atual = ir_atual;
   let total_proposta = ir_proposta + ir_dividendos + ir_offshore + ir_fundos + itcmd;
   let diferenca_total = total_proposta - total_atual;
 
-  // 🔹 Novo cálculo do salário líquido na proposta
-  let novo_salario = salario - inss - ir_proposta;
+  // 🟢 Salários líquidos
+  let salario_liquido_atual = salario - inss - ir_atual;
+  let salario_liquido_proposta = salario - inss - ir_proposta;
+  let diferenca_salario = salario_liquido_proposta - salario_liquido_atual;
 
+  // 🟢 Saída do resultado
   document.getElementById("resultado").innerHTML = `
     <h3>Resultado:</h3>
     <p><strong>INSS:</strong> ${formatarMoeda(inss)}</p>
@@ -56,12 +105,20 @@ function calcularTudo() {
     <p><strong>Fundos Exclusivos (15%):</strong> ${formatarMoeda(ir_fundos)}</p>
     <p><strong>Herança/Doações:</strong> ${formatarMoeda(itcmd)}</p>
     <p><strong>Diferença total de impostos:</strong> ${formatarMoeda(diferenca_total)}</p>
-    
+
     <hr>
-    <p style="font-size:18px; font-weight:bold; color:#2e7d32;">
-      💰 Novo salário líquido (com a proposta): ${formatarMoeda(novo_salario)}
+    <p style="font-size:16px;">
+      💵 <strong>Salário líquido (modelo atual):</strong> ${formatarMoeda(salario_liquido_atual)}
     </p>
-    <p><small>(Salário bruto - INSS - IR Proposta)</small></p>
+    <p style="font-size:18px; font-weight:bold; color:#2e7d32;">
+      💰 Salário líquido (com a proposta): ${formatarMoeda(salario_liquido_proposta)}
+    </p>
+    <p style="font-size:15px; color:${diferenca_salario >= 0 ? '#2e7d32' : '#c62828'};">
+      ${diferenca_salario >= 0 ? '📈 Ganho líquido:' : '📉 Perda líquida:'} ${formatarMoeda(diferenca_salario)}
+    </p>
   `;
 }
 </script>
+
+</body>
+</html>
