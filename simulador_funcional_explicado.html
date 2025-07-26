@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -85,19 +84,28 @@ function calcularTudo() {
   let total_proposta = ir_proposta + ir_dividendos + ir_offshore + ir_fundos + itcmd;
   let diferenca_total = total_proposta - total_atual;
 
+  // 🔹 Novo cálculo do salário líquido na proposta
+  let novo_salario = salario - inss - ir_proposta;
+
   document.getElementById("resultado").innerHTML = `
     <h3>Resultado:</h3>
-    <p><strong>INSS:</strong> (valor atual) ${formatarMoeda(inss)}</p>
-    <p><strong>Imposto de Renda sobre salário (modelo atual):</strong> <br><small>Calculado com base nas faixas progressivas do modelo vigente, considerando o salário bruto menos INSS.</small><br>${formatarMoeda(ir_atual)}</p>
-    <p><strong>Imposto de Renda sobre salário (com a proposta):</strong> <br><small>Calculado com base nas novas faixas de tributação a partir de R$ 5.000.</small><br>${formatarMoeda(ir_proposta)}</p>
-    <p><strong>Lucros Recebidos de empresa própria (PJ):</strong> <br><small>Isento no modelo atual e permanece isento na proposta.</small><br>${formatarMoeda(lucros)}</p>
-    <p><strong>Imposto de Renda sobre dividendos (com a proposta):</strong> <br><small>Tributação de 15% sobre o valor total informado.</small><br>${formatarMoeda(ir_dividendos)}</p>
-    <p><strong>Imposto de Renda sobre lucros no exterior (com a proposta):</strong> <br><small>Tributação de 22,5% sobre valores declarados como offshore.</small><br>${formatarMoeda(ir_offshore)}</p>
-    <p><strong>Imposto de Renda sobre fundos exclusivos (com a proposta):</strong> <br><small>Tributação de 15% sobre o total dos fundos exclusivos informados.</small><br>${formatarMoeda(ir_fundos)}</p>
-    <p><strong>Imposto sobre herança (com a proposta):</strong> <br><small>Tributação de 8% até R$ 4 milhões, e 16% acima disso.</small><br>${formatarMoeda(itcmd)}</p>
-    <p><strong>Diferença total com a proposta (todos os impostos somados):</strong> <br><small>Diferença entre o total de impostos pagos no modelo proposto e no modelo atual.</small><br>${formatarMoeda(diferenca_total)}</p>
+    <p><strong>INSS:</strong> ${formatarMoeda(inss)}</p>
+    <p><strong>Imposto de Renda (modelo atual):</strong> ${formatarMoeda(ir_atual)}</p>
+    <p><strong>Imposto de Renda (proposta):</strong> ${formatarMoeda(ir_proposta)}</p>
+    <p><strong>Dividendos tributados (15%):</strong> ${formatarMoeda(ir_dividendos)}</p>
+    <p><strong>Lucros Offshore (22%):</strong> ${formatarMoeda(ir_offshore)}</p>
+    <p><strong>Fundos Exclusivos (15%):</strong> ${formatarMoeda(ir_fundos)}</p>
+    <p><strong>Herança/Doações:</strong> ${formatarMoeda(itcmd)}</p>
+    <p><strong>Diferença total de impostos:</strong> ${formatarMoeda(diferenca_total)}</p>
+    
+    <hr>
+    <p style="font-size:18px; font-weight:bold; color:#2e7d32;">
+      💰 Novo salário líquido (com a proposta): ${formatarMoeda(novo_salario)}
+    </p>
+    <p><small>(Salário bruto - INSS - IR Proposta)</small></p>
   `;
 }
 </script>
+
 </body>
 </html>
