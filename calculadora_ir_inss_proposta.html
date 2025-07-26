@@ -1,97 +1,67 @@
+<script>
+function parseInput(valor) {
+  valor = valor.replaceAll('.', '').replace(',', '.');
+  let parsed = parseFloat(valor);
+  return isNaN(parsed) ? 0 : parsed;
+}
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Calculadora IR e INSS</title>
-</head>
-<body style="font-family: Arial, sans-serif; padding: 20px;">
-    <h2>Calculadora de IR e INSS - Modelo Atual vs Proposta (PL 1087/2025)</h2>
-    <label for="salario">Informe seu salário bruto (R$):</label>
-    <input type="number" id="salario" value="13000" step="100">
-    <button onclick="calcular()">Calcular</button>
+function formatarMoeda(valor) {
+  return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
 
-    <div id="resultado" style="margin-top: 20px;"></div>
+function calcularTudo() {
+  let salario = parseInput(document.getElementById("salario").value);
+  let lucros = parseInput(document.getElementById("lucros").value);
+  let dividendos = parseInput(document.getElementById("dividendos").value);
+  let offshore = parseInput(document.getElementById("offshore").value);
+  let fundos = parseInput(document.getElementById("fundos").value);
+  let heranca = parseInput(document.getElementById("heranca").value);
 
-    <script>
-        function calcularINSS(salario) {
-            let faixas = [
-                [1212.00, 0.075],
-                [2427.35, 0.09],
-                [3641.03, 0.12],
-                [Infinity, 0.14]
-            ];
-            let limites = [1212.00, 1215.35, 1213.68, 4516.38];
-            let total = 0;
-            let restante = salario;
+  let inss = Math.min(salario * 0.14, 951.62);
+  let base_ir = salario - inss;
 
-            for (let i = 0; i < faixas.length; i++) {
-                if (restante > 0) {
-                    let base = Math.min(restante, limites[i]);
-                    total += base * faixas[i][1];
-                    restante -= base;
-                }
-            }
-            return Math.min(total, 951.62);
-        }
+  let ir_atual = base_ir <= 2112 ? 0 :
+                 base_ir <= 2826.65 ? base_ir * 0.075 - 158.4 :
+                 base_ir <= 3751.05 ? base_ir * 0.15 - 370.4 :
+                 base_ir <= 4664.68 ? base_ir * 0.225 - 651.73 :
+                 base_ir * 0.275 - 884.96;
 
-        function calcularIRAtual(base) {
-            let faixas = [
-                [2112.00, 0.0, 0.0],
-                [2826.65, 0.075, 158.40],
-                [3751.05, 0.15, 370.40],
-                [4664.68, 0.225, 651.73],
-                [Infinity, 0.275, 884.96]
-            ];
-            for (let i = 0; i < faixas.length; i++) {
-                if (base <= faixas[i][0]) {
-                    return Math.max(0, (base * faixas[i][1]) - faixas[i][2]);
-                }
-            }
-            return 0;
-        }
+  let ir_proposta = 0;
+  if (base_ir > 5000) {
+    ir_proposta += Math.min(base_ir - 5000, 2350) * 0.075;
+    if (base_ir > 7350) ir_proposta += Math.min(base_ir - 7350, 2650) * 0.15;
+    if (base_ir > 10000) ir_proposta += Math.min(base_ir - 10000, 10000) * 0.225;
+    if (base_ir > 20000) ir_proposta += (base_ir - 20000) * 0.275;
+  }
 
-        function calcularIRProposta(base) {
-            let faixas = [
-                [5000.00, 0.00],
-                [7350.00, 0.075],
-                [10000.00, 0.15],
-                [20000.00, 0.225],
-                [Infinity, 0.275]
-            ];
-            let imposto = 0;
-            let anterior = 0;
+  let ir_dividendos = dividendos * 0.15;
+  let ir_offshore = offshore * 0.22;
+  let ir_fundos = fundos * 0.15;
+  let itcmd = heranca <= 4000000 ? heranca * 0.08 : heranca * 0.16;
 
-            for (let i = 0; i < faixas.length; i++) {
-                let teto = faixas[i][0];
-                let aliquota = faixas[i][1];
-                if (base > teto) {
-                    imposto += (teto - anterior) * aliquota;
-                } else {
-                    imposto += (base - anterior) * aliquota;
-                    break;
-                }
-                anterior = teto;
-            }
-            return imposto;
-        }
+  let total_atual = ir_atual;
+  let total_proposta = ir_proposta + ir_dividendos + ir_offshore + ir_fundos + itcmd;
+  let diferenca_total = total_proposta - total_atual;
 
-        function calcular() {
-            let salario = parseFloat(document.getElementById('salario').value);
-            let inss = calcularINSS(salario);
-            let base = salario - inss;
-            let irAtual = calcularIRAtual(base);
-            let irNovo = calcularIRProposta(base);
-            let resultado = `
-                <p><strong>Salário Bruto:</strong> R$ ${salario.toFixed(2)}</p>
-                <p><strong>Desconto INSS:</strong> R$ ${inss.toFixed(2)}</p>
-                <p><strong>Base de Cálculo:</strong> R$ ${base.toFixed(2)}</p>
-                <p><strong>IR Atual:</strong> R$ ${irAtual.toFixed(2)}</p>
-                <p><strong>IR Proposta (PL 1087/25):</strong> R$ ${irNovo.toFixed(2)}</p>
-                <p><strong>Diferença de IR:</strong> R$ ${(irAtual - irNovo).toFixed(2)}</p>
-            `;
-            document.getElementById('resultado').innerHTML = resultado;
-        }
-    </script>
-</body>
-</html>
+  // 🔹 Novo cálculo do salário líquido na proposta
+  let novo_salario = salario - inss - ir_proposta;
+
+  document.getElementById("resultado").innerHTML = `
+    <h3>Resultado:</h3>
+    <p><strong>INSS:</strong> ${formatarMoeda(inss)}</p>
+    <p><strong>Imposto de Renda (modelo atual):</strong> ${formatarMoeda(ir_atual)}</p>
+    <p><strong>Imposto de Renda (proposta):</strong> ${formatarMoeda(ir_proposta)}</p>
+    <p><strong>Dividendos tributados (15%):</strong> ${formatarMoeda(ir_dividendos)}</p>
+    <p><strong>Lucros Offshore (22%):</strong> ${formatarMoeda(ir_offshore)}</p>
+    <p><strong>Fundos Exclusivos (15%):</strong> ${formatarMoeda(ir_fundos)}</p>
+    <p><strong>Herança/Doações:</strong> ${formatarMoeda(itcmd)}</p>
+    <p><strong>Diferença total de impostos:</strong> ${formatarMoeda(diferenca_total)}</p>
+    
+    <hr>
+    <p style="font-size:18px; font-weight:bold; color:#2e7d32;">
+      💰 Novo salário líquido (com a proposta): ${formatarMoeda(novo_salario)}
+    </p>
+    <p><small>(Salário bruto - INSS - IR Proposta)</small></p>
+  `;
+}
+</script>
