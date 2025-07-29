@@ -26,13 +26,13 @@
       max-height: 150px;
     }
 
-    /* 🔵 Bloco informativo acima da calculadora */
+    /* 🔵 Texto informativo acima da calculadora */
     .info-text {
-      max-width: 900px;
+      max-width: 920px; /* 🔥 Mesmo limite lateral do layout abaixo */
       margin: 30px auto 10px auto;
-      text-align: center;
+      text-align: left; /* texto alinhado à esquerda */
       background: #ffffff10;
-      padding: 20px;
+      padding: 20px 30px;
       border-radius: 8px;
       color: white;
       line-height: 1.6;
@@ -43,6 +43,7 @@
       font-size: 28px;
       color: #fdd835;
       margin-bottom: 15px;
+      text-align: center;
     }
 
     /* Layout principal: calculadora + texto lateral */
@@ -75,6 +76,7 @@
       line-height: 1.5;
     }
 
+    /* Botão VOTE AQUI */
     .vote-button {
       display: inline-block;
       background-color: #fdd835;
@@ -86,7 +88,7 @@
       font-size: 22px;
       text-align: center;
       width: 220px;
-      margin-top: 20px;
+      margin-bottom: 20px; /* 🔥 Espaço entre o botão e o texto abaixo */
       box-shadow: 0 3px 6px rgba(0,0,0,0.2);
       transition: background 0.3s ease;
     }
@@ -198,16 +200,18 @@
 
   <!-- 📢 Texto lateral e botão -->
   <div class="texto-lateral">
+    <!-- ✅ Botão agora acima do título VOCÊ É A FAVOR DE -->
+    <a href="https://plebiscitopopular.votabem.com.br/?id=11076MR9572&fbclid=PAZXh0bgNhZW0CMTEAAacqaTGd4zOxxgTWCb5t28ue-ITZRktWPTXKOYT2tQtxcytc8Ig_BlnpZ9f9Jg_aem_sTMAXl5S5PSF627wn0vGaw" 
+       target="_blank" class="vote-button">VOTE AQUI!</a>
+
     <p><span style="color: #fdd835;">VOCÊ É A FAVOR DE:</span></p>
 
-    <p>Redução da jornada de trabalho sem redução salarial,  
-    e pelo fim da escala 6×1?</p>
-
+    <!-- ✅ Ordem alterada -->
     <p>Que quem ganhe mais de 50 mil pague mais imposto,  
     para que quem recebe até 5 mil não pague imposto de renda?</p>
 
-    <a href="https://plebiscitopopular.votabem.com.br/?id=11076MR9572&fbclid=PAZXh0bgNhZW0CMTEAAacqaTGd4zOxxgTWCb5t28ue-ITZRktWPTXKOYT2tQtxcytc8Ig_BlnpZ9f9Jg_aem_sTMAXl5S5PSF627wn0vGaw" 
-       target="_blank" class="vote-button">VOTE AQUI!</a>
+    <p>Redução da jornada de trabalho sem redução salarial,  
+    e pelo fim da escala 6×1?</p>
   </div>
 
 </div>
