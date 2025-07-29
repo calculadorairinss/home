@@ -8,19 +8,30 @@
       font-family: Arial, sans-serif; 
       padding: 0; 
       margin: 0;
-      background: #2e7d32; /* 🌿 Fundo verde */
+      background: #2e7d32; /* 🌿 Fundo verde principal */
     }
+
     /* 🎯 Banner no topo */
     .banner {
-      background: #fdd835; /* Amarelo vibrante */
-      padding: 20px;
+      background: #1b5e20; /* Verde escuro */
+      padding: 25px;
       text-align: center;
       font-weight: bold;
-      font-size: 22px;
-      line-height: 1.4;
-      color: #ffffff; /* Texto em branco */
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      line-height: 1.5;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
+    .banner h1 {
+      color: #fdd835; /* Amarelo forte */
+      font-size: 28px;
+      margin: 0 0 10px 0;
+    }
+    .banner p {
+      color: #ffffff; /* Texto branco */
+      font-size: 20px;
+      margin: 8px 0;
+    }
+
+    /* Container da calculadora */
     .container { 
       max-width: 600px; 
       margin: 20px auto; 
@@ -55,6 +66,7 @@
       border-left: 5px solid #388e3c; 
       border-radius: 5px; 
     }
+
     /* Layout comparativo */
     .comparativo {
       display: flex;
@@ -93,12 +105,12 @@
 
 <!-- 🔝 Banner Superior -->
 <div class="banner">
-  Você é a FAVOR DE:<br><br>
-  Redução da jornada de trabalho sem<br>
-  redução salarial, e pelo fim da escala 6×1?<br><br>
-  Que quem ganhe mais de 50 mil pague<br>
+  <h1>Você é a FAVOR DE:</h1>
+  <p>Redução da jornada de trabalho sem<br>
+  redução salarial, e pelo fim da escala 6×1?</p>
+  <p>Que quem ganhe mais de 50 mil pague<br>
   mais imposto, para que quem recebe<br>
-  até 5 mil não pague imposto de renda?
+  até 5 mil não pague imposto de renda?</p>
 </div>
 
 <div class="container">
@@ -114,4 +126,68 @@
 
 <script>
 function parseInput(valor) {
-  valor =
+  valor = valor.replaceAll('.', '').replace(',', '.');
+  let parsed = parseFloat(valor);
+  return isNaN(parsed) ? 0 : parsed;
+}
+
+function formatarMoeda(valor) {
+  return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+function calcularTudo() {
+  let salario = parseInput(document.getElementById("salario").value);
+
+  if (salario <= 0) {
+    document.getElementById("resultado").innerHTML = "<p>Por favor, insira um salário bruto válido.</p>";
+    return;
+  }
+
+  // Cálculos
+  let inss = Math.min(salario * 0.14, 951.62);
+  let base_ir = salario - inss;
+
+  // IR modelo atual
+  let ir_atual = base_ir <= 2112 ? 0 :
+                 base_ir <= 2826.65 ? base_ir * 0.075 - 158.4 :
+                 base_ir <= 3751.05 ? base_ir * 0.15 - 370.4 :
+                 base_ir <= 4664.68 ? base_ir * 0.225 - 651.73 :
+                 base_ir * 0.275 - 884.96;
+
+  // IR proposta
+  let ir_proposta = 0;
+  if (base_ir > 5000) {
+    ir_proposta += Math.min(base_ir - 5000, 2350) * 0.075;
+    if (base_ir > 7350) ir_proposta += Math.min(base_ir - 7350, 2650) * 0.15;
+    if (base_ir > 10000) ir_proposta += Math.min(base_ir - 10000, 10000) * 0.225;
+    if (base_ir > 20000) ir_proposta += (base_ir - 20000) * 0.275;
+  }
+
+  // Salários líquidos
+  let salario_liquido_atual = salario - inss - ir_atual;
+  let salario_liquido_proposta = salario - inss - ir_proposta;
+  let diferenca_salario = salario_liquido_proposta - salario_liquido_atual;
+
+  // Resultado final
+  document.getElementById("resultado").innerHTML = `
+    <h3>Resultado</h3>
+    <p><strong>INSS:</strong> ${formatarMoeda(inss)}</p>
+    <div class="comparativo">
+      <div class="coluna">
+        <h4>💵 Modelo Atual</h4>
+        <p>${formatarMoeda(salario_liquido_atual)}</p>
+      </div>
+      <div class="coluna">
+        <h4>💰 Com a Proposta</h4>
+        <p style="color:#2e7d32;">${formatarMoeda(salario_liquido_proposta)}</p>
+      </div>
+    </div>
+    <p class="diferenca-final" style="color:${diferenca_salario >= 0 ? '#2e7d32' : '#c62828'};">
+      ${diferenca_salario >= 0 ? '📈 Ganho líquido:' : '📉 Perda líquida:'} ${formatarMoeda(diferenca_salario)}
+    </p>
+  `;
+}
+</script>
+
+</body>
+</html>
