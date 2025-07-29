@@ -4,14 +4,130 @@
   <meta charset="UTF-8">
   <title>Simulador de Impostos</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 30px; background: #f8f8f8; }
-    .container { max-width: 850px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    input { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; }
-    button { padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    button:hover { background-color: #0056b3; }
-    .result { background: #e8f5e9; padding: 20px; margin-top: 20px; border-left: 5px solid #388e3c; border-radius: 5px; }
-    
-    /* 🔵 NOVO: Estilo para as colunas comparativas */
+    body { 
+      font-family: Arial, sans-serif; 
+      padding: 0; 
+      margin: 0;
+      background: #2e7d32;
+    }
+
+    /* 🎯 Banner superior */
+    .banner {
+      background: #1b5e20;
+      width: 100%;
+      padding: 20px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .banner img {
+      max-height: 150px;
+    }
+
+    /* 🔵 Texto informativo acima da calculadora */
+    .info-text {
+      max-width: 920px; /* 🔥 Mesmo limite lateral do layout abaixo */
+      margin: 30px auto 10px auto;
+      text-align: left; /* texto alinhado à esquerda */
+      background: #ffffff10;
+      padding: 20px 30px;
+      border-radius: 8px;
+      color: white;
+      line-height: 1.6;
+      font-size: 20px;
+    }
+
+    .info-text h2 {
+      font-size: 28px;
+      color: #fdd835;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    /* Layout principal: calculadora + texto lateral */
+    .layout {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 30px;
+      margin: 20px auto 40px auto;
+      max-width: 1000px;
+      padding: 0 20px;
+    }
+
+    /* Container da calculadora */
+    .container { 
+      max-width: 600px; 
+      flex: 1;
+      background: white; 
+      padding: 30px; 
+      border-radius: 8px; 
+      box-shadow: 0 0 10px rgba(0,0,0,0.2); 
+    }
+
+    /* Coluna de texto lateral */
+    .texto-lateral {
+      width: 320px;
+      color: white;
+      font-weight: bold;
+      font-size: 20px;
+      line-height: 1.5;
+    }
+
+    /* Botão VOTE AQUI */
+    .vote-button {
+      display: inline-block;
+      background-color: #fdd835;
+      color: #1b5e20;
+      font-weight: bold;
+      padding: 15px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 22px;
+      text-align: center;
+      width: 220px;
+      margin-bottom: 20px; /* 🔥 Espaço entre o botão e o texto abaixo */
+      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+      transition: background 0.3s ease;
+    }
+
+    .vote-button:hover {
+      background-color: #ffeb3b;
+    }
+
+    input { 
+      width: 100%; 
+      padding: 10px; 
+      margin-top: 5px; 
+      margin-bottom: 15px; 
+      border: 1px solid #ccc; 
+      border-radius: 4px; 
+    }
+
+    button { 
+      padding: 12px; 
+      background-color: #007bff; 
+      color: white; 
+      border: none; 
+      border-radius: 4px; 
+      cursor: pointer; 
+    }
+
+    button:hover { 
+      background-color: #0056b3; 
+    }
+
+    .result { 
+      background: #e8f5e9; 
+      padding: 20px; 
+      margin-top: 20px; 
+      border-left: 5px solid #388e3c; 
+      border-radius: 5px; 
+    }
+
+    /* Layout comparativo */
     .comparativo {
       display: flex;
       justify-content: space-between;
@@ -19,6 +135,7 @@
       margin-top: 15px;
       margin-bottom: 10px;
     }
+
     .coluna {
       flex: 1;
       background: #fff;
@@ -26,17 +143,20 @@
       border-radius: 6px;
       box-shadow: 0 0 5px rgba(0,0,0,0.05);
     }
+
     .coluna h4 {
       margin-bottom: 10px;
       text-align: center;
       font-size: 16px;
       color: #333;
     }
+
     .coluna p {
       font-size: 17px;
       text-align: center;
       font-weight: bold;
     }
+
     .diferenca-final {
       text-align: center;
       font-size: 18px;
@@ -46,30 +166,54 @@
   </style>
 </head>
 <body>
-<div class="container">
-  <h2>"Simulador: Modelo Atual vs. Modelo Proposto pelo Governo para Cobrança de Imposto de Renda e Patrimônio"</h2>
 
-  <label for="salario">Salário Bruto Pessoa Física:</label>
-  <input type="text" id="salario" placeholder="Ex: 5.000,00">
+<!-- 🔝 Banner Superior COM IMAGEM -->
+<div class="banner">
+  <img src="./logopp.jpg" alt="Plebiscito Popular">
+</div>
 
-  <label for="lucros">Lucros Recebidos Pessoa Jurídica:</label>
-  <input type="text" id="lucros" placeholder="Ex: 1.000.000,00">
+<!-- 🔵 Texto central acima da calculadora -->
+<div class="info-text">
+  <h2>O QUE É O PLEBISCITO?</h2>
+  <p>
+    O Plebiscito Popular 2025 é uma iniciativa dos movimentos sociais, centrais sindicais, juventudes,
+    artistas, entidades de fé e partidos progressistas para ouvir a população brasileira sobre temas urgentes
+    e pressionar por mudanças fundamentais.
+  </p>
+  <p><strong><span style="color: #fdd835;">A participação na votação será voluntária.</span></strong></p>
+</div>
 
-  <label for="dividendos">Dividendos Recebidos:</label>
-  <input type="text" id="dividendos" placeholder="Ex: 1.000.000.000.000">
+<!-- 🔽 Layout principal: Calculadora + Texto lateral -->
+<div class="layout">
 
-  <label for="offshore">Lucros Offshore:</label>
-  <input type="text" id="offshore" placeholder="Ex: 2.000.000,00">
+  <!-- 📊 Calculadora -->
+  <div class="container">
+    <h2>"Simule o impacto no seu salário se o Projeto de Lei 1087/25 passar no Congresso. Exija que deputados e senadores da sua bancada apoiem a proposta!"</h2>
 
-  <label for="fundos">Fundos Exclusivos:</label>
-  <input type="text" id="fundos" placeholder="Ex: 3.000.000,00">
+    <label for="salario">💼 Salário Bruto Pessoa Física:</label>
+    <input type="text" id="salario" placeholder="Ex: 5.000,00">
 
-  <label for="heranca">Herança/Doações Recebidas:</label>
-  <input type="text" id="heranca" placeholder="Ex: 4.000.000,00">
+    <button onclick="calcularTudo()">Calcular</button>
 
-  <button onclick="calcularTudo()">Calcular</button>
+    <div id="resultado" class="result"></div>
+  </div>
 
-  <div id="resultado" class="result"></div>
+  <!-- 📢 Texto lateral e botão -->
+  <div class="texto-lateral">
+    <!-- ✅ Botão agora acima do título VOCÊ É A FAVOR DE -->
+    <a href="https://plebiscitopopular.votabem.com.br/?id=11076MR9572&fbclid=PAZXh0bgNhZW0CMTEAAacqaTGd4zOxxgTWCb5t28ue-ITZRktWPTXKOYT2tQtxcytc8Ig_BlnpZ9f9Jg_aem_sTMAXl5S5PSF627wn0vGaw" 
+       target="_blank" class="vote-button">VOTE AQUI!</a>
+
+    <p><span style="color: #fdd835;">VOCÊ É A FAVOR DE:</span></p>
+
+    <!-- ✅ Ordem alterada -->
+    <p>Que quem ganhe mais de 50 mil pague mais imposto,  
+    para que quem recebe até 5 mil não pague imposto de renda?</p>
+
+    <p>Redução da jornada de trabalho sem redução salarial,  
+    e pelo fim da escala 6×1?</p>
+  </div>
+
 </div>
 
 <script>
@@ -85,24 +229,24 @@ function formatarMoeda(valor) {
 
 function calcularTudo() {
   let salario = parseInput(document.getElementById("salario").value);
-  let lucros = parseInput(document.getElementById("lucros").value);
-  let dividendos = parseInput(document.getElementById("dividendos").value);
-  let offshore = parseInput(document.getElementById("offshore").value);
-  let fundos = parseInput(document.getElementById("fundos").value);
-  let heranca = parseInput(document.getElementById("heranca").value);
 
-  // 🟢 Cálculos de INSS e base de IR
+  if (salario <= 0) {
+    document.getElementById("resultado").innerHTML = "<p>Por favor, insira um salário bruto válido.</p>";
+    return;
+  }
+
+  // Cálculos
   let inss = Math.min(salario * 0.14, 951.62);
   let base_ir = salario - inss;
 
-  // 🟢 IR Modelo Atual
+  // IR modelo atual
   let ir_atual = base_ir <= 2112 ? 0 :
                  base_ir <= 2826.65 ? base_ir * 0.075 - 158.4 :
                  base_ir <= 3751.05 ? base_ir * 0.15 - 370.4 :
                  base_ir <= 4664.68 ? base_ir * 0.225 - 651.73 :
                  base_ir * 0.275 - 884.96;
 
-  // 🟢 IR Proposta do Governo
+  // IR proposta
   let ir_proposta = 0;
   if (base_ir > 5000) {
     ir_proposta += Math.min(base_ir - 5000, 2350) * 0.075;
@@ -111,56 +255,29 @@ function calcularTudo() {
     if (base_ir > 20000) ir_proposta += (base_ir - 20000) * 0.275;
   }
 
-  // 🟢 Outros impostos
-  let ir_dividendos = dividendos * 0.15;
-  let ir_offshore = offshore * 0.22;
-  let ir_fundos = fundos * 0.15;
-  let itcmd = heranca <= 4000000 ? heranca * 0.08 : heranca * 0.16;
+  // Salários líquidos
+  let salario_liquido_atual = salario - inss - ir_atual;
+  let salario_liquido_proposta = salario - inss - ir_proposta;
+  let diferenca_salario = salario_liquido_proposta - salario_liquido_atual;
 
-  // 🟢 Totais
-  let total_atual = ir_atual;
-  let total_proposta = ir_proposta + ir_dividendos + ir_offshore + ir_fundos + itcmd;
-  let diferenca_total = total_proposta - total_atual;
-
-  // 🟢 Salários líquidos (só calculamos se houver salário informado)
-  let salario_liquido_atual = salario > 0 ? salario - inss - ir_atual : 0;
-  let salario_liquido_proposta = salario > 0 ? salario - inss - ir_proposta : 0;
-  let diferenca_salario = salario > 0 ? salario_liquido_proposta - salario_liquido_atual : 0;
-
-  // 🟢 Montagem do resultado principal
-  let resultadoHTML = `
-    <h3>Resultado:</h3>
+  // Resultado final
+  document.getElementById("resultado").innerHTML = `
+    <h3>Resultado</h3>
     <p><strong>INSS:</strong> ${formatarMoeda(inss)}</p>
-    <p><strong>Imposto de Renda (modelo atual):</strong> ${formatarMoeda(ir_atual)}</p>
-    <p><strong>Imposto de Renda (proposta):</strong> ${formatarMoeda(ir_proposta)}</p>
-    <p><strong>Dividendos tributados (15%):</strong> ${formatarMoeda(ir_dividendos)}</p>
-    <p><strong>Lucros Offshore (22%):</strong> ${formatarMoeda(ir_offshore)}</p>
-    <p><strong>Fundos Exclusivos (15%):</strong> ${formatarMoeda(ir_fundos)}</p>
-    <p><strong>Herança/Doações:</strong> ${formatarMoeda(itcmd)}</p>
-    <p><strong>Diferença total de impostos:</strong> ${formatarMoeda(diferenca_total)}</p>
-  `;
-
-  // 🔵 Somente mostra o bloco do salário líquido se o usuário informar salário
-  if (salario > 0) {
-    resultadoHTML += `
-      <hr>
-      <div class="comparativo">
-        <div class="coluna">
-          <h4>💵 Modelo Atual</h4>
-          <p>${formatarMoeda(salario_liquido_atual)}</p>
-        </div>
-        <div class="coluna">
-          <h4>💰 Com a Proposta</h4>
-          <p style="color:#2e7d32;">${formatarMoeda(salario_liquido_proposta)}</p>
-        </div>
+    <div class="comparativo">
+      <div class="coluna">
+        <h4>💵 Modelo Atual</h4>
+        <p>${formatarMoeda(salario_liquido_atual)}</p>
       </div>
-      <p class="diferenca-final" style="color:${diferenca_salario >= 0 ? '#2e7d32' : '#c62828'};">
-        ${diferenca_salario >= 0 ? '📈 Ganho líquido:' : '📉 Perda líquida:'} ${formatarMoeda(diferenca_salario)}
-      </p>
-    `;
-  }
-
-  document.getElementById("resultado").innerHTML = resultadoHTML;
+      <div class="coluna">
+        <h4>💰 Com a Proposta</h4>
+        <p style="color:#2e7d32;">${formatarMoeda(salario_liquido_proposta)}</p>
+      </div>
+    </div>
+    <p class="diferenca-final" style="color:${diferenca_salario >= 0 ? '#2e7d32' : '#c62828'};">
+      ${diferenca_salario >= 0 ? '📈 Ganho líquido:' : '📉 Perda líquida:'} ${formatarMoeda(diferenca_salario)}
+    </p>
+  `;
 }
 </script>
 
