@@ -8,36 +8,23 @@
       font-family: Arial, sans-serif; 
       padding: 0; 
       margin: 0;
-      background: #2e7d32; /* 🌿 Fundo verde */
+      background: #2e7d32;
     }
 
     /* 🎯 Banner no topo */
     .banner {
       background: #1b5e20; /* Verde escuro */
       width: 100%;
-      padding: 30px;
+      padding: 20px 0;
       display: flex;
       justify-content: center;
+      align-items: center;
       box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
 
-    .banner-content {
-      max-width: 800px;
-      text-align: left;
-    }
-
-    .banner-content h1 {
-      color: #fdd835;
-      font-size: 38px;
-      margin: 0 0 15px 0;
-      text-transform: uppercase;
-    }
-
-    .banner-content p {
-      color: #ffffff;
-      font-size: 26px;
-      margin: 10px 0;
-      line-height: 1.5;
+    /* Imagem central no banner */
+    .banner img {
+      max-height: 150px;
     }
 
     /* Container principal */
@@ -48,6 +35,16 @@
       padding: 30px; 
       border-radius: 8px; 
       box-shadow: 0 0 10px rgba(0,0,0,0.2); 
+    }
+
+    /* Texto do banner que foi movido */
+    .mensagem-voto {
+      font-weight: bold;
+      font-size: 20px;
+      color: #1b5e20;
+      margin-bottom: 15px;
+      text-align: center;
+      line-height: 1.4;
     }
 
     input { 
@@ -72,6 +69,7 @@
       background-color: #0056b3; 
     }
 
+    /* Resultado + botão lado a lado */
     .result-container {
       display: flex;
       justify-content: space-between;
@@ -150,19 +148,22 @@
 </head>
 <body>
 
-<!-- 🔝 Banner Superior -->
+<!-- 🔝 Banner Superior COM A IMAGEM -->
 <div class="banner">
-  <div class="banner-content">
-    <h1>Você é a FAVOR DE:</h1>
-    <p>Redução da jornada de trabalho sem<br>
-    redução salarial, e pelo fim da escala 6×1?</p>
-    <p>Que quem ganhe mais de 50 mil pague<br>
-    mais imposto, para que quem recebe<br>
-    até 5 mil não pague imposto de renda?</p>
-  </div>
+  <img src="logopp.jpg" alt="Plebiscito Popular">
 </div>
 
 <div class="container">
+
+  <!-- Texto do banner que agora fica acima do botão -->
+  <div class="mensagem-voto">
+    Você é a FAVOR DE:<br><br>
+    Redução da jornada de trabalho sem redução salarial,<br>
+    e pelo fim da escala 6×1?<br><br>
+    Que quem ganhe mais de 50 mil pague mais imposto,<br>
+    para que quem recebe até 5 mil não pague imposto de renda?
+  </div>
+
   <h2>Simulador de Salário Líquido</h2>
 
   <label for="salario">💼 Salário Bruto Pessoa Física:</label>
