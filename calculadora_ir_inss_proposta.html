@@ -4,13 +4,57 @@
   <meta charset="UTF-8">
   <title>Simulador de Impostos</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 30px; background: #f8f8f8; }
-    .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    input { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; }
-    button { padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    button:hover { background-color: #0056b3; }
-    .result { background: #e8f5e9; padding: 20px; margin-top: 20px; border-left: 5px solid #388e3c; border-radius: 5px; }
-
+    body { 
+      font-family: Arial, sans-serif; 
+      padding: 0; 
+      margin: 0;
+      background: #2e7d32; /* 🌿 Fundo verde */
+    }
+    /* 🎯 Banner no topo */
+    .banner {
+      background: #fdd835; /* Amarelo vibrante */
+      padding: 20px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 22px;
+      line-height: 1.4;
+      color: #ffffff; /* Texto em branco */
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .container { 
+      max-width: 600px; 
+      margin: 20px auto; 
+      background: white; 
+      padding: 30px; 
+      border-radius: 8px; 
+      box-shadow: 0 0 10px rgba(0,0,0,0.2); 
+    }
+    input { 
+      width: 100%; 
+      padding: 10px; 
+      margin-top: 5px; 
+      margin-bottom: 15px; 
+      border: 1px solid #ccc; 
+      border-radius: 4px; 
+    }
+    button { 
+      padding: 12px; 
+      background-color: #007bff; 
+      color: white; 
+      border: none; 
+      border-radius: 4px; 
+      cursor: pointer; 
+    }
+    button:hover { 
+      background-color: #0056b3; 
+    }
+    .result { 
+      background: #e8f5e9; 
+      padding: 20px; 
+      margin-top: 20px; 
+      border-left: 5px solid #388e3c; 
+      border-radius: 5px; 
+    }
     /* Layout comparativo */
     .comparativo {
       display: flex;
@@ -46,8 +90,19 @@
   </style>
 </head>
 <body>
+
+<!-- 🔝 Banner Superior -->
+<div class="banner">
+  Você é a FAVOR DE:<br><br>
+  Redução da jornada de trabalho sem<br>
+  redução salarial, e pelo fim da escala 6×1?<br><br>
+  Que quem ganhe mais de 50 mil pague<br>
+  mais imposto, para que quem recebe<br>
+  até 5 mil não pague imposto de renda?
+</div>
+
 <div class="container">
-  <h2>Veja como ficará o seu salário se o objetico do plebiscito for alcançado</h2>
+  <h2>Simulador de Salário Líquido</h2>
 
   <label for="salario">💼 Salário Bruto Pessoa Física:</label>
   <input type="text" id="salario" placeholder="Ex: 5.000,00">
@@ -59,68 +114,4 @@
 
 <script>
 function parseInput(valor) {
-  valor = valor.replaceAll('.', '').replace(',', '.');
-  let parsed = parseFloat(valor);
-  return isNaN(parsed) ? 0 : parsed;
-}
-
-function formatarMoeda(valor) {
-  return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
-
-function calcularTudo() {
-  let salario = parseInput(document.getElementById("salario").value);
-
-  if (salario <= 0) {
-    document.getElementById("resultado").innerHTML = "<p>Por favor, insira um salário bruto válido.</p>";
-    return;
-  }
-
-  // Cálculos
-  let inss = Math.min(salario * 0.14, 951.62);
-  let base_ir = salario - inss;
-
-  // IR modelo atual
-  let ir_atual = base_ir <= 2112 ? 0 :
-                 base_ir <= 2826.65 ? base_ir * 0.075 - 158.4 :
-                 base_ir <= 3751.05 ? base_ir * 0.15 - 370.4 :
-                 base_ir <= 4664.68 ? base_ir * 0.225 - 651.73 :
-                 base_ir * 0.275 - 884.96;
-
-  // IR proposta
-  let ir_proposta = 0;
-  if (base_ir > 5000) {
-    ir_proposta += Math.min(base_ir - 5000, 2350) * 0.075;
-    if (base_ir > 7350) ir_proposta += Math.min(base_ir - 7350, 2650) * 0.15;
-    if (base_ir > 10000) ir_proposta += Math.min(base_ir - 10000, 10000) * 0.225;
-    if (base_ir > 20000) ir_proposta += (base_ir - 20000) * 0.275;
-  }
-
-  // Salários líquidos
-  let salario_liquido_atual = salario - inss - ir_atual;
-  let salario_liquido_proposta = salario - inss - ir_proposta;
-  let diferenca_salario = salario_liquido_proposta - salario_liquido_atual;
-
-  // Resultado final
-  document.getElementById("resultado").innerHTML = `
-    <h3>Resultado</h3>
-    <p><strong>INSS:</strong> ${formatarMoeda(inss)}</p>
-    <div class="comparativo">
-      <div class="coluna">
-        <h4>💵 Modelo Atual</h4>
-        <p>${formatarMoeda(salario_liquido_atual)}</p>
-      </div>
-      <div class="coluna">
-        <h4>💰 Com a Proposta</h4>
-        <p style="color:#2e7d32;">${formatarMoeda(salario_liquido_proposta)}</p>
-      </div>
-    </div>
-    <p class="diferenca-final" style="color:${diferenca_salario >= 0 ? '#2e7d32' : '#c62828'};">
-      ${diferenca_salario >= 0 ? '📈 Ganho líquido:' : '📉 Perda líquida:'} ${formatarMoeda(diferenca_salario)}
-    </p>
-  `;
-}
-</script>
-
-</body>
-</html>
+  valor =
